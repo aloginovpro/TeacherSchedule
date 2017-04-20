@@ -1,0 +1,8 @@
+INSERT INTO universities(id, name, address, city_id)
+VALUES (1, 'Mephi', 'Kashirskaya st', 1);
+
+INSERT INTO universities(id, name, address, city_id)
+VALUES (2, 'MSU', 'Leninskiye gori st', 1);
+
+INSERT INTO universities(id, name, address, city_id)
+VALUES (3, 'SPbGU', 'Smolnogo st', 2);

@@ -1,0 +1,5 @@
+INSERT INTO cities(id, name)
+VALUES (1, 'Moscow');
+
+INSERT INTO cities(id, name)
+VALUES (2, 'St.Petersburg');

@@ -2,7 +2,7 @@ package com.vbelova.teachers.service;
 
 import com.google.common.collect.ImmutableSet;
 import com.vbelova.teachers.entity.User;
-import com.vbelova.teachers.repository.UserRepo;
+import com.vbelova.teachers.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,12 +13,12 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
-    private final UserRepo userRepo;
+    private final UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
         name = name.trim();
-        User user =  userRepo.findByName(name);
+        User user =  userRepository.findByName(name);
         if (user == null) {
             throw new UsernameNotFoundException("Not found " + name);
         }

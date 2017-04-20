@@ -1,0 +1,2 @@
+INSERT INTO cathedras(id, name, faculty_id)
+VALUES (1, 'Automatics', 1);

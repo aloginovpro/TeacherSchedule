@@ -1,0 +1,2 @@
+INSERT INTO faculties(id, name, university_id)
+VALUES (1, 'A', 1);
