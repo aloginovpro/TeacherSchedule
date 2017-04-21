@@ -58,6 +58,25 @@ public class EntityService {
         return checkNonNull(teacherRepository.findOne(id), "Teacher not found");
     }
 
+    public void deleteCity(long id) {
+        cityRepository.delete(id);
+    }
+
+    public void deleteUniversity(long id) {
+        universityRepository.delete(id);
+    }
+
+    public void deleteFaculty(long id) {
+        facultyRepository.delete(id);
+    }
+
+    public void deleteCathedra(long id) {
+        cathedraRepository.delete(id);
+    }
+
+    public void deleteTeacher(long id) {
+        teacherRepository.delete(id);
+    }
 
     private static <T> T checkNonNull(T o, String msg) {
         if (o == null) {
