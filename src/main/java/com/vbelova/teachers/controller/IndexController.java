@@ -1,5 +1,6 @@
 package com.vbelova.teachers.controller;
 
+import com.vbelova.teachers.entity.*;
 import com.vbelova.teachers.service.EntityService;
 import com.vbelova.teachers.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -48,7 +49,7 @@ public class IndexController {
             @PathVariable long id
     ) {
         return createCategoryView(
-                entityService.getCity(id).name,
+                entityService.get(City.class, id).name,
                 CATEGORY_UNIVERSITY,
                 entityService.getUniversities(id), it -> it.id, it -> it.name + ", " + it.address
         );
@@ -59,7 +60,7 @@ public class IndexController {
             @PathVariable long id
     ) {
         return createCategoryView(
-                entityService.getUniversity(id).name,
+                entityService.get(University.class, id).name,
                 CATEGORY_FACULTY,
                 entityService.getFaculties(id), it -> it.id, it -> it.name
         );
@@ -70,7 +71,7 @@ public class IndexController {
             @PathVariable long id
     ) {
         return createCategoryView(
-                entityService.getFaculty(id).name,
+                entityService.get(Faculty.class, id).name,
                 CATEGORY_CATHEDRA,
                 entityService.getCathedras(id), it -> it.id, it -> it.name
         );
@@ -81,7 +82,7 @@ public class IndexController {
             @PathVariable long id
     ) {
         return createCategoryView(
-                entityService.getCathedra(id).name,
+                entityService.get(Cathedra.class, id).name,
                 CATEGORY_TEACHER,
                 entityService.getTeachers(id), it -> it.id, it -> it.name
         );
@@ -92,7 +93,7 @@ public class IndexController {
             @PathVariable long id
     ) {
         return new ModelAndView("schedule")
-                .addObject("title", entityService.getTeacher(id).name);
+                .addObject("title", entityService.get(Teacher.class, id).name);
     }
 
     private <T> ModelAndView createCategoryView(

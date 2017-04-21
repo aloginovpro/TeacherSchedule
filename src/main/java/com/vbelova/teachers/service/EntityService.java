@@ -1,21 +1,46 @@
 package com.vbelova.teachers.service;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.vbelova.teachers.entity.*;
 import com.vbelova.teachers.repository.*;
-import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
-@RequiredArgsConstructor
 public class EntityService {
     private final CityRepository cityRepository;
     private final UniversityRepository universityRepository;
     private final FacultyRepository facultyRepository;
     private final CathedraRepository cathedraRepository;
     private final TeacherRepository teacherRepository;
+    private final Map<Class<?>, CrudRepository<?, Long>> classToRepositoryMap;
+
+    public EntityService(
+            CityRepository cityRepository,
+            UniversityRepository universityRepository,
+            FacultyRepository facultyRepository,
+            CathedraRepository cathedraRepository,
+            TeacherRepository teacherRepository
+    ) {
+        this.cityRepository = cityRepository;
+        this.universityRepository = universityRepository;
+        this.facultyRepository = facultyRepository;
+        this.cathedraRepository = cathedraRepository;
+        this.teacherRepository = teacherRepository;
+        this.classToRepositoryMap = ImmutableMap.of(
+                City.class, cityRepository,
+                University.class, universityRepository,
+                Faculty.class, facultyRepository,
+                Cathedra.class, cathedraRepository,
+                Teacher.class, teacherRepository
+        );
+    }
+
+
 
     public List<City> getCities() {
         return Lists.newArrayList(cityRepository.findAll());
@@ -38,44 +63,24 @@ public class EntityService {
     }
 
 
-    public City getCity(long id) {
-        return checkNonNull(cityRepository.findOne(id), "City not found");
+    public void delete(Class<?> clazz, long id) {
+        findRepo(clazz).delete(id);
     }
 
-    public University getUniversity(long id) {
-        return checkNonNull(universityRepository.findOne(id), "University not found");
+    public <T> T get(Class<T> clazz, long id) {
+        return checkNonNull(
+                findRepo(clazz).findOne(id),
+                "No entry found for " + clazz.getSimpleName() + " with id " + id
+        );
     }
 
-    public Faculty getFaculty(long id) {
-        return checkNonNull(facultyRepository.findOne(id), "Faculty not found");
-    }
-
-    public Cathedra getCathedra(long id) {
-        return checkNonNull(cathedraRepository.findOne(id), "Cathedra not found");
-    }
-
-    public Teacher getTeacher(long id) {
-        return checkNonNull(teacherRepository.findOne(id), "Teacher not found");
-    }
-
-    public void deleteCity(long id) {
-        cityRepository.delete(id);
-    }
-
-    public void deleteUniversity(long id) {
-        universityRepository.delete(id);
-    }
-
-    public void deleteFaculty(long id) {
-        facultyRepository.delete(id);
-    }
-
-    public void deleteCathedra(long id) {
-        cathedraRepository.delete(id);
-    }
-
-    public void deleteTeacher(long id) {
-        teacherRepository.delete(id);
+    @SuppressWarnings("unchecked")
+    private <T> CrudRepository<T, Long> findRepo(Class<T> clazz) {
+        CrudRepository<?, Long> repo = classToRepositoryMap.get(clazz);
+        if (repo == null) {
+            throw new IllegalArgumentException("Entity not supported: " + clazz);
+        }
+        return (CrudRepository<T, Long>) repo;
     }
 
     private static <T> T checkNonNull(T o, String msg) {
