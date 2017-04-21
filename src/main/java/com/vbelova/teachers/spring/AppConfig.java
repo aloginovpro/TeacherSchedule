@@ -1,16 +1,14 @@
 package com.vbelova.teachers.spring;
 
-import org.hibernate.SessionFactory;
+import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.orm.hibernate5.HibernateTransactionManager;
-import org.springframework.orm.hibernate5.LocalSessionFactoryBuilder;
+import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.sql.DataSource;
@@ -29,6 +27,7 @@ import java.util.Properties;
         WebMvcConfig.class
 })
 @PropertySource("classpath:db.properties")
+@EnableTransactionManagement
 public class AppConfig extends WebSecurityConfigurerAdapter {
 
     private final Environment env;
@@ -48,27 +47,20 @@ public class AppConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    SessionFactory sessionFactory() {
-        LocalSessionFactoryBuilder sessionBuilder = new LocalSessionFactoryBuilder(dataSource());
-        sessionBuilder.scanPackages("com.vbelova.teachers");
-        sessionBuilder.addProperties(getHibernateProperties());
-        return sessionBuilder.buildSessionFactory();
+    public JpaTransactionManager transactionManager() {
+        return new JpaTransactionManager(entityManagerFactory().getObject());
     }
 
     @Bean
-    PlatformTransactionManager transactionManager() {
-        return new HibernateTransactionManager(sessionFactory());
-    }
-
-    @Bean
-    LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource());
+        em.setPersistenceProviderClass(HibernatePersistenceProvider.class);
         em.setPackagesToScan(
                 "com.vbelova.teachers.repository",
                 "com.vbelova.teachers.entity"
         );
-        em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
+        em.setJpaProperties(getHibernateProperties());
         return em;
     }
 
