@@ -12,8 +12,13 @@
 </head>
 <body>
 
-    <p><a href="${pageContext.request.contextPath}/">Go to index</a></p>
-    <br>
+    <p>
+        <a href="${pageContext.request.contextPath}/">Go to index</a>
+        <c:if test="${!isAdmin}">
+         or <a href="${pageContext.request.contextPath}/login">login</a>
+        </c:if>
+    </p>
+    <p>${description}</p>
 
     <table id="itemsTable">
         <tr>

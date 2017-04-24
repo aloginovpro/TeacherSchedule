@@ -41,7 +41,7 @@ public class IndexController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     private ModelAndView cities() {
         return createCategoryView(
-                "index",
+                null,
                 CATEGORY_CITY,
                 0,
                 entityService.getCities(), it -> it.id, it -> it.name,
@@ -54,10 +54,10 @@ public class IndexController {
             @PathVariable long id
     ) {
         return createCategoryView(
-                entityService.get(City.class, id).name,
+                entityService.get(City.class, id),
                 CATEGORY_UNIVERSITY,
                 id,
-                entityService.getUniversities(id), it -> it.id, it -> it.name + ", " + it.address,
+                entityService.getUniversities(id), it -> it.id, it -> it.name,
                 University.class
         );
     }
@@ -67,7 +67,7 @@ public class IndexController {
             @PathVariable long id
     ) {
         return createCategoryView(
-                entityService.get(University.class, id).name,
+                entityService.get(University.class, id),
                 CATEGORY_FACULTY,
                 id,
                 entityService.getFaculties(id), it -> it.id, it -> it.name,
@@ -80,7 +80,7 @@ public class IndexController {
             @PathVariable long id
     ) {
         return createCategoryView(
-                entityService.get(Faculty.class, id).name,
+                entityService.get(Faculty.class, id),
                 CATEGORY_CATHEDRA,
                 id,
                 entityService.getCathedras(id), it -> it.id, it -> it.name,
@@ -93,7 +93,7 @@ public class IndexController {
             @PathVariable long id
     ) {
         return createCategoryView(
-                entityService.get(Cathedra.class, id).name,
+                entityService.get(Cathedra.class, id),
                 CATEGORY_TEACHER,
                 id,
                 entityService.getTeachers(id), it -> it.id, it -> it.name,
@@ -105,12 +105,15 @@ public class IndexController {
     private ModelAndView schedule(
             @PathVariable long id
     ) {
+        Teacher entity = entityService.get(Teacher.class, id);
         return new ModelAndView("schedule")
-                .addObject("title", entityService.get(Teacher.class, id).name);
+                .addObject("title", entity.getName())
+                .addObject("description", entity.toString().replace("\n", "<br>"))
+                .addObject("isAdmin", userService.isAdmin());
     }
 
     private <T> ModelAndView createCategoryView(
-            String title,
+            CategoryEntity entity,
             String prefix,
             long categoryId,
             List<T> items,
@@ -122,7 +125,8 @@ public class IndexController {
                 .sorted(Comparator.comparing(keyFunction))
                 .collect(Collectors.toMap(keyFunction, valueFunction));
         return new ModelAndView("category")
-                    .addObject("title", title)
+                    .addObject("title", entity == null ? "Title" : entity.getName())
+                    .addObject("description", entity == null ? null : entity.toString().replace("\n", "<br>"))
                     .addObject("prefix", prefix)
                     .addObject("categoryId", categoryId)
                     .addObject("items", itemsResult)
