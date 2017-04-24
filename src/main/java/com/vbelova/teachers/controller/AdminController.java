@@ -29,13 +29,18 @@ public class AdminController {
     private final EntityService entityService;
 
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    private void delete(@RequestBody DeleteRequest request) {
+    private DeleteResponse delete(@RequestBody DeleteRequest request) {
         entityService.delete(categoryNameToClassMap.get(request.category), request.id);
+        return new DeleteResponse();
     }
 
     private static class DeleteRequest {
         public String category;
         public long id;
+    }
+
+    private static class DeleteResponse {
+        public String error;
     }
 
     @RequiredArgsConstructor
