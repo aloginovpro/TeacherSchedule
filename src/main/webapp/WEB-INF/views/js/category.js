@@ -26,7 +26,29 @@ function deleteRow(button, category) {
     document.getElementById("itemsTable").deleteRow(row.rowIndex);
 }
 
-function post(data, url) {
+function create(category, categoryId) {
+    var table = document.getElementById("newInstanceTable");
+    var data = {};
+    for (var i = 0; i < table.rows.length; i++) {
+        var element = table.rows[i].cells[1].firstElementChild;
+        data[element.name] = element.value;
+    }
+    post(
+        data,
+        "/admin/add/" + category + "?to=" + categoryId,
+        function(response){
+            var error = response.error;
+            if (error === null) {
+                alert("done!");
+                location.reload();
+            } else {
+                alert(error);
+            }
+        }
+    );
+}
+
+function post(data, url, onSuccess) {
     $.ajax({
         type: "POST",
         contentType: "application/json",
@@ -36,6 +58,10 @@ function post(data, url) {
         beforeSend: function(request) {
             var csrfToken = $("meta[name='_csrf']").attr("content");
             return request.setRequestHeader('X-CSRF-Token', csrfToken);
+        },
+        success: onSuccess,
+        error: function() {
+            alert("some error happened!")
         }
     })
 }

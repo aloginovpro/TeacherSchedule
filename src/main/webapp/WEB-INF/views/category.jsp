@@ -12,11 +12,12 @@
 </head>
 <body>
 
-    <input type="text" id="filterInput" onkeyup="filterFunction()" placeholder="Name" title="Filter">
+    <p><a href="${pageContext.request.contextPath}/">Go to index</a></p>
+    <br>
 
     <table id="itemsTable">
         <tr>
-            <th width="300px">info</th>
+            <th width="300px"><input type="text" id="filterInput" onkeyup="filterFunction()" placeholder="Name" title="Filter"></th>
             <th width="30px">View</th>
             <c:if test="${isAdmin}">
             <th width="30px">id</th>
@@ -35,6 +36,22 @@
             </tr>
         </c:forEach>
     </table>
+    <br>
+
+
+
+<c:if test="${isAdmin}">
+    <p>Create new ${prefix}:</p>
+    <table id="newInstanceTable">
+    <c:forEach var="entry" items="${htmlInput}">
+    <tr>
+        <td width="100px">${entry.key}</td>
+        <td width="300px"><input type="${entry.value}" name="${entry.key}"></td>
+    </tr>
+    </c:forEach>
+    </table>
+    <input type="button" value="create" onclick="create('${prefix}', ${categoryId})">
+</c:if>
 
 </body>
 </html>

@@ -63,6 +63,10 @@ public class EntityService {
     }
 
 
+    public <T> void save(Class<T> clazz, T t) {
+        findRepo(clazz).save(t);
+    }
+
     public void delete(Class<?> clazz, long id) {
         findRepo(clazz).delete(id);
     }

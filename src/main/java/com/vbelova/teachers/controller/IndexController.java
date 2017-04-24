@@ -1,5 +1,6 @@
 package com.vbelova.teachers.controller;
 
+import com.google.common.collect.ImmutableMap;
 import com.vbelova.teachers.entity.*;
 import com.vbelova.teachers.service.EntityService;
 import com.vbelova.teachers.service.UserService;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +43,9 @@ public class IndexController {
         return createCategoryView(
                 "index",
                 CATEGORY_CITY,
-                entityService.getCities(), it -> it.id, it -> it.name
+                0,
+                entityService.getCities(), it -> it.id, it -> it.name,
+                City.class
         );
     }
 
@@ -51,7 +56,9 @@ public class IndexController {
         return createCategoryView(
                 entityService.get(City.class, id).name,
                 CATEGORY_UNIVERSITY,
-                entityService.getUniversities(id), it -> it.id, it -> it.name + ", " + it.address
+                id,
+                entityService.getUniversities(id), it -> it.id, it -> it.name + ", " + it.address,
+                University.class
         );
     }
 
@@ -62,7 +69,9 @@ public class IndexController {
         return createCategoryView(
                 entityService.get(University.class, id).name,
                 CATEGORY_FACULTY,
-                entityService.getFaculties(id), it -> it.id, it -> it.name
+                id,
+                entityService.getFaculties(id), it -> it.id, it -> it.name,
+                Faculty.class
         );
     }
 
@@ -73,7 +82,9 @@ public class IndexController {
         return createCategoryView(
                 entityService.get(Faculty.class, id).name,
                 CATEGORY_CATHEDRA,
-                entityService.getCathedras(id), it -> it.id, it -> it.name
+                id,
+                entityService.getCathedras(id), it -> it.id, it -> it.name,
+                Cathedra.class
         );
     }
 
@@ -84,7 +95,9 @@ public class IndexController {
         return createCategoryView(
                 entityService.get(Cathedra.class, id).name,
                 CATEGORY_TEACHER,
-                entityService.getTeachers(id), it -> it.id, it -> it.name
+                id,
+                entityService.getTeachers(id), it -> it.id, it -> it.name,
+                Teacher.class
         );
     }
 
@@ -99,9 +112,11 @@ public class IndexController {
     private <T> ModelAndView createCategoryView(
             String title,
             String prefix,
+            long categoryId,
             List<T> items,
             Function<T, Long> keyFunction,
-            Function<T, String> valueFunction
+            Function<T, String> valueFunction,
+            Class categoryClass
     ) {
         Map<Long, String> itemsResult = items.stream()
                 .sorted(Comparator.comparing(keyFunction))
@@ -109,8 +124,29 @@ public class IndexController {
         return new ModelAndView("category")
                     .addObject("title", title)
                     .addObject("prefix", prefix)
+                    .addObject("categoryId", categoryId)
                     .addObject("items", itemsResult)
+                    .addObject("htmlInput", getFieldNameToTypeMap(categoryClass))
                     .addObject("isAdmin", userService.isAdmin());
+    }
+
+    private static Map<String, String> getFieldNameToTypeMap(Class clazz) {
+        return Arrays.stream(clazz.getDeclaredFields())
+                .filter(it -> !it.getName().equals("id") && !it.getName().endsWith("Id"))
+                .collect(Collectors.toMap(Field::getName, it -> javaClassToHtmlInputType(it.getType())));
+    }
+
+    private static final Map<Class, String> javaClassToHtmlInputType = ImmutableMap.of(
+            String.class, "text",
+            Long.class, "number",
+            Integer.class, "number"
+    );
+    private static String javaClassToHtmlInputType(Class clazz) {
+        String result = javaClassToHtmlInputType.get(clazz);
+        if (result == null) {
+            throw new IllegalArgumentException("Class " + clazz + "not supported");
+        }
+        return result;
     }
 
 }
