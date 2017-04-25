@@ -20,10 +20,12 @@
     </p>
     <p>${description}</p>
 
+    <c:if test="${items != null}">
+    <input type="text" id="filterInput" onkeyup="filterFunction()" placeholder="${prefix} filter" title="Filter" size="49">
     <table id="itemsTable">
         <tr>
-            <th width="300px"><input type="text" id="filterInput" onkeyup="filterFunction()" placeholder="Name" title="Filter"></th>
-            <th width="30px">View</th>
+            <th width="300px">${prefix}</th>
+            <th width="30px">view</th>
             <c:if test="${isAdmin}">
             <th width="30px">id</th>
             <th width="50px">
@@ -33,7 +35,7 @@
         <c:forEach var="entry" items="${items}">
             <tr>
                 <td>${entry.value}</td>
-                <td><a href="${pageContext.request.contextPath}/${prefix}/${entry.key}">View</a></td>
+                <td><a href="${pageContext.request.contextPath}/${prefix}/${entry.key}">view</a></td>
                 <c:if test="${isAdmin}">
                 <td>${entry.key}</td>
                 <td><input type="button" value="delete" onclick="deleteRow(this, '${prefix}')"></td>
@@ -42,20 +44,25 @@
         </c:forEach>
     </table>
     <br>
+    </c:if>
 
 
 
-<c:if test="${isAdmin}">
+<c:if test="${isAdmin && htmlInput != null}">
     <p>Create new ${prefix}:</p>
     <table id="newInstanceTable">
     <c:forEach var="entry" items="${htmlInput}">
     <tr>
         <td width="100px">${entry.key}</td>
-        <td width="300px"><input type="${entry.value}" name="${entry.key}"></td>
+        <td width="100px"><input type="${entry.value}" name="${entry.key}"></td>
     </tr>
     </c:forEach>
     </table>
     <input type="button" value="create" onclick="create('${prefix}', ${categoryId})">
+</c:if>
+
+<c:if test="${isCategoryTeacher}">
+    <p>View schedule: <a href="${pageContext.request.contextPath}/schedule/${categoryId}">view</a></p>
 </c:if>
 
 </body>

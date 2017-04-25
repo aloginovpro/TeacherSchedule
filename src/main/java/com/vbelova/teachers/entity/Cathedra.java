@@ -20,7 +20,7 @@ public class Cathedra implements CategoryEntity {
 
     @Override
     public String toString() {
-        return "name: " + name;
+        return "category: cathedra\nname: " + name;
     }
 
 }

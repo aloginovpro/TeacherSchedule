@@ -22,6 +22,6 @@ public class University implements CategoryEntity {
 
     @Override
     public String toString() {
-        return "name: " + name + "\naddress: " + address;
+        return "category: university\nname: " + name + "\naddress: " + address;
     }
 }

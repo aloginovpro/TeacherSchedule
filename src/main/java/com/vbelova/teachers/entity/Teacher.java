@@ -29,7 +29,7 @@ public class Teacher implements CategoryEntity {
     @Override
     public String toString() {
         return String.format(
-                "name: %s\nsubjects: %s\nexperience: %s\nage: %s\nemail: %s\n",
+                "category: teacher\nname: %s\nsubjects: %s\nexperience: %s y\nage: %s y\nemail: %s\n",
                 name, subjects, experience, age, email
         );
     }

@@ -3,7 +3,8 @@
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <html>
 <head>
-    <title>${title}</title>
+    <title>Schedule</title>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/style.css" />
 </head>
 <body>
     <p>

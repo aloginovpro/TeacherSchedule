@@ -6,9 +6,8 @@ import com.vbelova.teachers.service.EntityService;
 import com.vbelova.teachers.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.lang.reflect.Field;
@@ -33,12 +32,12 @@ public class IndexController {
     private final EntityService entityService;
     private final UserService userService;
 
-    @RequestMapping(value = "/*", method = RequestMethod.GET)
+    @GetMapping(value = "/*")
     private String any() {
         return "redirect:/";
     }
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @GetMapping(value = "/")
     private ModelAndView cities() {
         return createCategoryView(
                 null,
@@ -49,7 +48,7 @@ public class IndexController {
         );
     }
 
-    @RequestMapping(value =  "/" + CATEGORY_CITY + "/{id}", method = RequestMethod.GET)
+    @GetMapping(value =  "/" + CATEGORY_CITY + "/{id}")
     private ModelAndView universities(
             @PathVariable long id
     ) {
@@ -62,7 +61,7 @@ public class IndexController {
         );
     }
 
-    @RequestMapping(value = "/" + CATEGORY_UNIVERSITY + "/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/" + CATEGORY_UNIVERSITY + "/{id}")
     private ModelAndView faculties(
             @PathVariable long id
     ) {
@@ -75,7 +74,7 @@ public class IndexController {
         );
     }
 
-    @RequestMapping(value = "/" + CATEGORY_FACULTY + "/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/" + CATEGORY_FACULTY + "/{id}")
     private ModelAndView cathedras(
             @PathVariable long id
     ) {
@@ -88,7 +87,7 @@ public class IndexController {
         );
     }
 
-    @RequestMapping(value = "/" + CATEGORY_CATHEDRA + "/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/" + CATEGORY_CATHEDRA + "/{id}")
     private ModelAndView teachers(
             @PathVariable long id
     ) {
@@ -101,15 +100,17 @@ public class IndexController {
         );
     }
 
-    @RequestMapping(value = "/"+ CATEGORY_TEACHER +"/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/"+ CATEGORY_TEACHER +"/{id}")
     private ModelAndView schedule(
             @PathVariable long id
     ) {
-        Teacher entity = entityService.get(Teacher.class, id);
-        return new ModelAndView("schedule")
-                .addObject("title", entity.getName())
-                .addObject("description", entity.toString().replace("\n", "<br>"))
-                .addObject("isAdmin", userService.isAdmin());
+        return createCategoryView(
+                entityService.get(Teacher.class, id),
+                null,
+                id,
+                null, null, null,
+                null
+        );
     }
 
     private <T> ModelAndView createCategoryView(
@@ -121,7 +122,7 @@ public class IndexController {
             Function<T, String> valueFunction,
             Class categoryClass
     ) {
-        Map<Long, String> itemsResult = items.stream()
+        Map<Long, String> itemsResult = items == null ? null : items.stream()
                 .sorted(Comparator.comparing(keyFunction))
                 .collect(Collectors.toMap(keyFunction, valueFunction));
         return new ModelAndView("category")
@@ -131,10 +132,14 @@ public class IndexController {
                     .addObject("categoryId", categoryId)
                     .addObject("items", itemsResult)
                     .addObject("htmlInput", getFieldNameToTypeMap(categoryClass))
-                    .addObject("isAdmin", userService.isAdmin());
+                    .addObject("isAdmin", userService.isAdmin())
+                    .addObject("isCategoryTeacher", entity != null && entity.getClass() == Teacher.class);
     }
 
     private static Map<String, String> getFieldNameToTypeMap(Class clazz) {
+        if (clazz == null) {
+            return null;
+        }
         return Arrays.stream(clazz.getDeclaredFields())
                 .filter(it -> !it.getName().equals("id") && !it.getName().endsWith("Id"))
                 .collect(Collectors.toMap(Field::getName, it -> javaClassToHtmlInputType(it.getType())));

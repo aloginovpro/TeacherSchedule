@@ -18,7 +18,7 @@ public class City implements CategoryEntity {
 
     @Override
     public String toString() {
-        return "name: " + name;
+        return "category: city\nname: " + name;
     }
 
 }
