@@ -13,6 +13,36 @@
          or <a href="${pageContext.request.contextPath}/login">login</a>
         </c:if>
     </p>
-    <p>${description}</p>
+
+    <p>Subjects: <c:if test="${subjects.isEmpty()}">-</c:if>
+    <c:forEach var="subject" items="${subjects}">
+        <br>${subject}
+    </c:forEach>
+    </p>
+
+    <table>
+        <tr bgcolor="#faebd7">
+            <th width="50px">start</th>
+            <th width="100px">Mon</th>
+            <th width="100px">Tue</th>
+            <th width="100px">Wed</th>
+            <th width="100px">Thu</th>
+            <th width="100px">Fri</th>
+            <th width="100px">Sat</th>
+            <th width="100px">Sun</th>
+        </tr>
+        <c:forEach begin="0" end="23" var="hour">
+        <tr>
+            <td bgcolor="#faebd7" align="center"><c:if test="${hour < 10}">0</c:if>${hour}</td>
+        <c:forEach begin="0" end="6" var="day">
+            <c:set var="value" value="${schedule[hour][day]}"/>
+            <td align="${value == null ? 'center' : 'left'}">
+                ${value == null ? '-' : value}
+            </td>
+        </c:forEach>
+        </tr>
+        </c:forEach>
+    </table>
+
 </body>
 </html>

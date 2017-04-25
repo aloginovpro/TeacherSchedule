@@ -1,2 +1,2 @@
-INSERT INTO teachers(id, name, subjects, experience, age, email, regalia, cathedra_id)
-VALUES (1, 'Ivanov Ivan', 'Maths, Algrbra', 10, 35, 'ivanov@gmail.com', 'professor', 1);
+INSERT INTO teachers(id, name,  experience, age, email, regalia, cathedra_id)
+VALUES (1, 'Ivanov Ivan', 10, 35, 'ivanov@gmail.com', 'professor', 1);

@@ -1,0 +1,5 @@
+INSERT INTO schedule_items(id, teacher_id, subject_id, day, hour)
+VALUES (1, 1, 1, 2, 3);
+
+INSERT INTO schedule_items(id, teacher_id, subject_id, day, hour)
+VALUES (2, 1, 2, 2, 4);

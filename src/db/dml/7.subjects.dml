@@ -1,0 +1,5 @@
+INSERT INTO subjects(id, name, teacher_id)
+VALUES (1, 'Maths', 1);
+
+INSERT INTO subjects(id, name, teacher_id)
+VALUES (2, 'Physics', 1);

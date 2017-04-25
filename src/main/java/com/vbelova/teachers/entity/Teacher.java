@@ -15,8 +15,6 @@ public class Teacher implements CategoryEntity {
     @NotNull @Size(min = 3, message = "Teacher name is too short")
     @Getter
     public String name;
-    @NotNull @Size(min = 4, message = "Subjects list is too short")
-    public String subjects;
     @NotNull @Size(message = "Experience can not be negative")
     public Integer experience;
     @NotNull @Size(min = 20, message = "Teacher can not be that young")
@@ -29,8 +27,8 @@ public class Teacher implements CategoryEntity {
     @Override
     public String toString() {
         return String.format(
-                "category: teacher\nname: %s\nsubjects: %s\nexperience: %s y\nage: %s y\nemail: %s\n",
-                name, subjects, experience, age, email
+                "category: teacher\nname: %s\nexperience: %s y\nage: %s y\nemail: %s\n",
+                name, experience, age, email
         );
     }
 }
