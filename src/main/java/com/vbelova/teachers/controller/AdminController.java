@@ -1,109 +1,57 @@
 package com.vbelova.teachers.controller;
 
-import com.google.common.collect.ImmutableMap;
-import com.vbelova.teachers.entity.*;
+import com.vbelova.teachers.entity.Teacher;
 import com.vbelova.teachers.service.EntityService;
+import com.vbelova.teachers.service.ScheduleService;
+import com.vbelova.teachers.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
-import javax.validation.Valid;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import static com.vbelova.teachers.controller.IndexController.*;
+import static org.apache.commons.lang3.StringUtils.join;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
 @SuppressWarnings("unused")
-@RequestMapping(value = "/admin")
 public class AdminController {
 
-    private static final Map<String, Class<?>> categoryNameToClassMap = ImmutableMap.of(
-            CATEGORY_CITY, City.class,
-            CATEGORY_UNIVERSITY, University.class,
-            CATEGORY_FACULTY, Faculty.class,
-            CATEGORY_CATHEDRA, Cathedra.class,
-            CATEGORY_TEACHER, Teacher.class
-    );
-
+    private final ScheduleService scheduleService;
+    private final UserService userService;
     private final EntityService entityService;
 
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    private DeleteResponse delete(@RequestBody DeleteRequest request) {
-        entityService.delete(categoryNameToClassMap.get(request.category), request.id);
-        return new DeleteResponse();
-    }
-
-    private static class DeleteRequest {
-        public String category;
-        public long id;
-    }
-
-    private static class DeleteResponse {
-        public String error;
-    }
-
-    @RequiredArgsConstructor
-    private static class AddResponse {
-        public final String error;
-    }
-
-    @PostMapping("/add/" + CATEGORY_CITY)
-    private AddResponse add(
-            @Valid @RequestBody City entity,
-            BindingResult bindingResult
+    @GetMapping(value = "/admin/subjects/{teacherId}")
+    private ModelAndView subjects(
+            @PathVariable long teacherId
     ) {
-        return add(City.class, entity, bindingResult);
+        Collection<String> subjects = scheduleService.getSubjects(teacherId).values()
+                .stream().sorted().collect(Collectors.toList());
+        return new ModelAndView("subjects")
+                .addObject("teacherName", entityService.get(Teacher.class, teacherId).name)
+                .addObject("isAdmin", userService.isAdmin())
+                .addObject("subjects", join(subjects, "\n"))
+                .addObject("id", teacherId);
     }
 
-    @PostMapping("/add/" + CATEGORY_UNIVERSITY)
-    private AddResponse add(
-            @RequestParam long to,
-            @Valid @RequestBody University entity,
-            BindingResult bindingResult
+    @PostMapping(value = "/admin/subjects/{teacherId}")
+    private String updateSubjects(
+            @PathVariable long teacherId,
+            @RequestParam String subjects
     ) {
-        entity.cityId = to;
-        return add(University.class, entity, bindingResult);
-    }
-
-    @PostMapping("/add/" + CATEGORY_FACULTY)
-    private AddResponse add(
-            @RequestParam long to,
-            @Valid @RequestBody Faculty entity,
-            BindingResult bindingResult
-    ) {
-        entity.universityId = to;
-        return add(Faculty.class, entity, bindingResult);
-    }
-
-    @PostMapping("/add/" + CATEGORY_CATHEDRA)
-    private AddResponse add(
-            @RequestParam long to,
-            @Valid @RequestBody Cathedra entity,
-            BindingResult bindingResult
-    ) {
-        entity.facultyId = to;
-        return add(Cathedra.class, entity, bindingResult);
-    }
-
-    @PostMapping("/add/" + CATEGORY_TEACHER)
-    private AddResponse add(
-            @RequestParam long to,
-            @Valid @RequestBody Teacher entity,
-            BindingResult bindingResult
-    ) {
-        entity.cathedraId = to;
-        return add(Teacher.class, entity, bindingResult);
-    }
-
-    private <T> AddResponse add(Class<T> clazz, T entity, BindingResult bindingResult) {
-        if (!bindingResult.hasErrors()) {
-            entityService.save(clazz, entity);
-            return new AddResponse(null);
-        }
-        StringBuilder sb = new StringBuilder();
-        bindingResult.getAllErrors().forEach(error -> sb.append(error.getDefaultMessage()).append("\n"));
-        return new AddResponse(sb.toString());
+        List<String> subjectsList = Arrays.stream(subjects.split("\n"))
+                .map(String::trim)
+                .filter(it -> !it.isEmpty())
+                .collect(Collectors.toList());
+        scheduleService.updateSubjects(teacherId, subjectsList);
+        return "redirect:/schedule/" + teacherId;
     }
 
 }

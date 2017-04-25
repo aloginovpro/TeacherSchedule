@@ -23,7 +23,7 @@
     <c:if test="${items != null}">
     <input type="text" id="filterInput" onkeyup="filterFunction()" placeholder="${prefix} filter" title="Filter" size="49">
     <table id="itemsTable">
-        <tr>
+        <tr bgcolor="#faebd7">
             <th width="300px">${prefix}</th>
             <th width="30px">view</th>
             <c:if test="${isAdmin}">

@@ -1,5 +1,7 @@
 package com.vbelova.teachers.controller;
 
+import com.vbelova.teachers.entity.Teacher;
+import com.vbelova.teachers.service.EntityService;
 import com.vbelova.teachers.service.ScheduleService;
 import com.vbelova.teachers.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -17,17 +19,20 @@ public class ScheduleController {
 
     private final ScheduleService scheduleService;
     private final UserService userService;
+    private final EntityService entityService;
 
-    @GetMapping(value = "/schedule/{id}")
+    @GetMapping(value = "/schedule/{teacherId}")
     private ModelAndView teachers(
-            @PathVariable long id
+            @PathVariable long teacherId
     ) {
-        Collection<String> subjects = scheduleService.getSubjects(id).values();
-        String[][] schedule = scheduleService.getSchedule(id);
+        Collection<String> subjects = scheduleService.getSubjects(teacherId).values();
+        String[][] schedule = scheduleService.getSchedule(teacherId);
         return new ModelAndView("schedule")
+                .addObject("teacherName", entityService.get(Teacher.class, teacherId).name)
                 .addObject("isAdmin", userService.isAdmin())
                 .addObject("subjects", subjects)
-                .addObject("schedule", schedule);
+                .addObject("schedule", schedule)
+                .addObject("id", teacherId);
     }
 
 }

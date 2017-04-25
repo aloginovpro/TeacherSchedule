@@ -14,11 +14,11 @@
         </c:if>
     </p>
 
-    <p>Subjects: <c:if test="${subjects.isEmpty()}">-</c:if>
-    <c:forEach var="subject" items="${subjects}">
-        <br>${subject}
-    </c:forEach>
-    </p>
+    <p>Teacher: ${teacherName}</p>
+
+    <c:if test="${isAdmin}">
+        <a href="${pageContext.request.contextPath}/admin/subjects/${id}">Edit subjects</a>
+    </c:if>
 
     <table>
         <tr bgcolor="#faebd7">
