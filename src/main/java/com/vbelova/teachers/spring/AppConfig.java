@@ -1,5 +1,6 @@
 package com.vbelova.teachers.spring;
 
+import com.vbelova.teachers.aspect.LoggingAspect;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
@@ -30,6 +31,7 @@ import java.util.Properties;
 })
 @PropertySource("classpath:db.properties")
 @EnableTransactionManagement
+@EnableAspectJAutoProxy
 public class AppConfig extends WebSecurityConfigurerAdapter {
 
     private final Environment env;
@@ -76,6 +78,11 @@ public class AppConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public Validator localValidatorFactoryBean() {
         return new LocalValidatorFactoryBean();
+    }
+
+    @Bean
+    public LoggingAspect loggingAspect() {
+        return new LoggingAspect();
     }
 
 }
