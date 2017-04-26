@@ -6,4 +6,6 @@ public interface UserService extends UserDetailsService {
 
     boolean isAdmin();
 
+    boolean isAuthorized();
+
 }

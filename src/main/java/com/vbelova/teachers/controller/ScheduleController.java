@@ -34,6 +34,7 @@ public class ScheduleController {
         return new ModelAndView("schedule")
                 .addObject("teacherName", entityService.get(Teacher.class, teacherId).name)
                 .addObject("isAdmin", userService.isAdmin())
+                .addObject("isAuthorized", userService.isAuthorized())
                 .addObject("subjects", subjects)
                 .addObject("schedule", schedule)
                 .addObject("id", teacherId);

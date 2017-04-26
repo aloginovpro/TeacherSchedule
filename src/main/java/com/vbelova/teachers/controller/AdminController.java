@@ -41,6 +41,7 @@ public class AdminController {
         return new ModelAndView("subjects")
                 .addObject("teacherName", entityService.get(Teacher.class, teacherId).name)
                 .addObject("isAdmin", userService.isAdmin())
+                .addObject("isAuthorized", userService.isAuthorized())
                 .addObject("subjects", join(subjects, "\n"))
                 .addObject("id", teacherId);
     }

@@ -136,6 +136,7 @@ public class IndexController {
                     .addObject("items", itemsResult)
                     .addObject("htmlInput", getFieldNameToTypeMap(categoryClass))
                     .addObject("isAdmin", userService.isAdmin())
+                    .addObject("isAuthorized", userService.isAuthorized())
                     .addObject("isCategoryTeacher", entity != null && entity.getClass() == Teacher.class);
     }
 

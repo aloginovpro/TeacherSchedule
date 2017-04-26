@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     private static final GrantedAuthority ADMIN = new SimpleGrantedAuthority("ROLE_ADMIN");
+    private static final GrantedAuthority USER = new SimpleGrantedAuthority("ROLE_USER");
 
     private final UserRepository userRepository;
 
@@ -38,7 +39,15 @@ public class UserServiceImpl implements UserService {
     }
 
     public boolean isAdmin() {
-        return SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(ADMIN);
+        return checkAuthority(ADMIN);
+    }
+
+    public boolean isAuthorized() {
+        return checkAuthority(ADMIN) || checkAuthority(USER);
+    }
+
+    private boolean checkAuthority(GrantedAuthority authority) {
+        return SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(authority);
     }
 
 }

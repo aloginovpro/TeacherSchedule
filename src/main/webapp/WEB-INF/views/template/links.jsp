@@ -3,7 +3,7 @@
 
 <p>
     <a href="${pageContext.request.contextPath}/">Go to home page</a>
-    <c:if test="${!isAdmin}">
+    <c:if test="${!isAuthorized}">
         or <a href="${pageContext.request.contextPath}/login">login</a>
     </c:if>
 </p>

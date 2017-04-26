@@ -19,6 +19,8 @@ public class Teacher implements CategoryEntity {
     public Integer age;
     @NotNull @Size(min = 5, message = "Email is too short")
     public String email;
+    @NotNull @Size(min = 5, message = "Regalia is too short")
+    public String regalia;
     @Column(name = "cathedra_id")
     public Long cathedraId;
 
