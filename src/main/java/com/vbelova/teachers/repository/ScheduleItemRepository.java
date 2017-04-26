@@ -7,8 +7,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ScheduleItemRepository extends CrudRepository<ScheduleItem, Long> {
+public interface ScheduleItemRepository extends CrudRepository<ScheduleItem, ScheduleItem.Pk> {
 
-    List<ScheduleItem> findByTeacherId(long id);
+    List<ScheduleItem> findByPkTeacherId(long id);
 
 }

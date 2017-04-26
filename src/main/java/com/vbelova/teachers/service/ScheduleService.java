@@ -27,9 +27,9 @@ public class ScheduleService {
     public String[][] getSchedule(long teacherId) {
         Map<Long, String> subjects = getSubjects(teacherId);
         String[][] result = new String[24][7];
-        List<ScheduleItem> scheduleItems = scheduleItemRepository.findByTeacherId(teacherId);
+        List<ScheduleItem> scheduleItems = scheduleItemRepository.findByPkTeacherId(teacherId);
         scheduleItems.forEach(
-                item -> result[item.hour][item.day] = subjects.get(item.subjectId)
+                item -> result[item.pk.hour][item.pk.day] = subjects.get(item.subjectId)
         );
         return result;
     }
@@ -52,16 +52,22 @@ public class ScheduleService {
     }
 
     public void updateSchedule(long teacherId, List<List<String>> table) {
+        scheduleItemRepository.deleteAll();
         Map<String, Long> subjectNameToId = getSubjects(teacherId).entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
         for (int hour = 0; hour < 24; hour++) {
             for (int day = 0; day < 7; day++) {
                 String subjectName = table.get(hour).get(day);
+                if (subjectName.equals("-")) {
+                    continue;
+                }
                 Long subjectId = subjectNameToId.get(subjectName);
-
+                if (subjectId == null) {
+                    throw new IllegalArgumentException("Unknown subject name " + subjectName + " for teacher id = " + teacherId);
+                }
+                scheduleItemRepository.save(new ScheduleItem(day, hour, teacherId, subjectId));
             }
         }
-
     }
 
 }
