@@ -4,7 +4,6 @@ import com.vbelova.teachers.entity.ScheduleItem;
 import com.vbelova.teachers.entity.Subject;
 import com.vbelova.teachers.repository.ScheduleItemRepository;
 import com.vbelova.teachers.repository.SubjectRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -13,11 +12,15 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class ScheduleServiceImpl implements ScheduleService {
 
     private final SubjectRepository subjectRepository;
     private final ScheduleItemRepository scheduleItemRepository;
+
+    public ScheduleServiceImpl(SubjectRepository subjectRepository, ScheduleItemRepository scheduleItemRepository) {
+        this.subjectRepository = subjectRepository;
+        this.scheduleItemRepository = scheduleItemRepository;
+    }
 
     public Map<Long, String> getSubjects(long teacherId) {
         return subjectRepository.findByTeacherId(teacherId).stream()

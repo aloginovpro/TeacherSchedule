@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import com.vbelova.teachers.entity.*;
 import com.vbelova.teachers.service.EntityService;
 import com.vbelova.teachers.service.UserService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +18,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Controller
-@RequiredArgsConstructor
 @SuppressWarnings("unused")
 public class IndexController {
 
@@ -31,6 +29,11 @@ public class IndexController {
 
     private final EntityService entityService;
     private final UserService userService;
+
+    public IndexController(EntityService entityService, UserService userService) {
+        this.entityService = entityService;
+        this.userService = userService;
+    }
 
     @GetMapping(value = "/*")
     private String any() {

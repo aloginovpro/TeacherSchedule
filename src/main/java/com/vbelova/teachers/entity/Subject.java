@@ -1,14 +1,10 @@
 package com.vbelova.teachers.entity;
 
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "subjects")
-@NoArgsConstructor
 public class Subject {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,6 +12,8 @@ public class Subject {
     public String name;
     @Column(name = "teacher_id")
     public Long teacherId;
+
+    public Subject() {}
 
     public Subject(String name, Long teacherId) {
         this.name = name;

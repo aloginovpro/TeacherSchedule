@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import com.vbelova.teachers.entity.*;
 import com.vbelova.teachers.service.EntityService;
 import com.vbelova.teachers.service.ScheduleService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +14,6 @@ import java.util.Map;
 import static com.vbelova.teachers.controller.IndexController.*;
 
 @RestController
-@RequiredArgsConstructor
 @SuppressWarnings("unused")
 @RequestMapping(value = "/admin")
 public class AdminRestController {
@@ -31,10 +29,15 @@ public class AdminRestController {
     private final EntityService entityService;
     private final ScheduleService scheduleService;
 
+    public AdminRestController(EntityService entityService, ScheduleService scheduleService) {
+        this.entityService = entityService;
+        this.scheduleService = scheduleService;
+    }
+
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     private BaseResponse delete(@RequestBody DeleteRequest request) {
         entityService.delete(categoryNameToClassMap.get(request.category), request.id);
-        return new BaseResponse();
+        return new BaseResponse(null);
     }
 
     private static class DeleteRequest {
@@ -43,16 +46,15 @@ public class AdminRestController {
     }
 
     private static class BaseResponse {
-        public String error;
-    }
-
-    @RequiredArgsConstructor
-    private static class AddResponse {
         public final String error;
+
+        private BaseResponse(String error) {
+            this.error = error;
+        }
     }
 
     @PostMapping("/add/" + CATEGORY_CITY)
-    private AddResponse add(
+    private BaseResponse add(
             @Valid @RequestBody City entity,
             BindingResult bindingResult
     ) {
@@ -60,7 +62,7 @@ public class AdminRestController {
     }
 
     @PostMapping("/add/" + CATEGORY_UNIVERSITY)
-    private AddResponse add(
+    private BaseResponse add(
             @RequestParam long to,
             @Valid @RequestBody University entity,
             BindingResult bindingResult
@@ -70,7 +72,7 @@ public class AdminRestController {
     }
 
     @PostMapping("/add/" + CATEGORY_FACULTY)
-    private AddResponse add(
+    private BaseResponse add(
             @RequestParam long to,
             @Valid @RequestBody Faculty entity,
             BindingResult bindingResult
@@ -80,7 +82,7 @@ public class AdminRestController {
     }
 
     @PostMapping("/add/" + CATEGORY_CATHEDRA)
-    private AddResponse add(
+    private BaseResponse add(
             @RequestParam long to,
             @Valid @RequestBody Cathedra entity,
             BindingResult bindingResult
@@ -90,7 +92,7 @@ public class AdminRestController {
     }
 
     @PostMapping("/add/" + CATEGORY_TEACHER)
-    private AddResponse add(
+    private BaseResponse add(
             @RequestParam long to,
             @Valid @RequestBody Teacher entity,
             BindingResult bindingResult
@@ -99,14 +101,14 @@ public class AdminRestController {
         return add(Teacher.class, entity, bindingResult);
     }
 
-    private <T> AddResponse add(Class<T> clazz, T entity, BindingResult bindingResult) {
+    private <T> BaseResponse add(Class<T> clazz, T entity, BindingResult bindingResult) {
         if (!bindingResult.hasErrors()) {
             entityService.save(clazz, entity);
-            return new AddResponse(null);
+            return new BaseResponse(null);
         }
         StringBuilder sb = new StringBuilder();
         bindingResult.getAllErrors().forEach(error -> sb.append(error.getDefaultMessage()).append("\n"));
-        return new AddResponse(sb.toString());
+        return new BaseResponse(sb.toString());
     }
 
     @PostMapping(value = "/updateSchedule/{teacherId}")
@@ -115,7 +117,7 @@ public class AdminRestController {
             @RequestBody UpdateScheduleRequest req
     ) {
         scheduleService.updateSchedule(teacherId, req.table);
-        return new BaseResponse();
+        return new BaseResponse(null);
     }
 
     public static class UpdateScheduleRequest {

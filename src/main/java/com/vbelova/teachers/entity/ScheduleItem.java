@@ -1,13 +1,10 @@
 package com.vbelova.teachers.entity;
 
-import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "schedule_items")
-@NoArgsConstructor
 public class ScheduleItem {
 
     @EmbeddedId
@@ -23,6 +20,8 @@ public class ScheduleItem {
         @Column(name = "teacher_id")
         public Long teacherId;
     }
+
+    public ScheduleItem() {}
 
     public ScheduleItem(int day, int hour, long teacherId, long subjectId) {
         this.subjectId = subjectId;

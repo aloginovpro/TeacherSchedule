@@ -1,7 +1,5 @@
 package com.vbelova.teachers.entity;
 
-import lombok.Getter;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -13,7 +11,6 @@ public class Teacher implements CategoryEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
     @NotNull @Size(min = 3, message = "Teacher name is too short")
-    @Getter
     public String name;
     @NotNull @Size(message = "Experience can not be negative")
     public Integer experience;
@@ -23,6 +20,11 @@ public class Teacher implements CategoryEntity {
     public String email;
     @Column(name = "cathedra_id")
     public Long cathedraId;
+
+    @Override
+    public String getName() {
+        return name;
+    }
 
     @Override
     public String toString() {

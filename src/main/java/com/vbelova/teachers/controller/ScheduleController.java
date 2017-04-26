@@ -4,7 +4,6 @@ import com.vbelova.teachers.entity.Teacher;
 import com.vbelova.teachers.service.EntityService;
 import com.vbelova.teachers.service.ScheduleService;
 import com.vbelova.teachers.service.UserService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,13 +12,18 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.Collection;
 
 @Controller
-@RequiredArgsConstructor
 @SuppressWarnings("unused")
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
     private final UserService userService;
     private final EntityService entityService;
+
+    public ScheduleController(ScheduleService scheduleService, UserService userService, EntityService entityService) {
+        this.scheduleService = scheduleService;
+        this.userService = userService;
+        this.entityService = entityService;
+    }
 
     @GetMapping(value = "/schedule/{teacherId}")
     private ModelAndView teachers(
