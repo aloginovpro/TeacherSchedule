@@ -48,6 +48,24 @@ function create(category, categoryId) {
     );
 }
 
+function updateSchedule(id) {
+    var table = document.getElementById("scheduleTable");
+    var arr = [];
+    for (var row = 0; row < 24; row++) {
+        arr[row] = [];
+        for (var col = 0; col < 7; col++) {
+            arr[row][col] = table.rows[row+1].cells[col+1].firstElementChild.value;
+        }
+    }
+    post(
+        {table: arr},
+        "/admin/updateSchedule/" + id,
+        function () {
+            alert("done!")
+        }
+    )
+}
+
 function post(data, url, onSuccess) {
     $.ajax({
         type: "POST",

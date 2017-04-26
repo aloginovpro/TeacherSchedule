@@ -5,6 +5,6 @@
 </head>
 <body>
     <p>Some error happened!</p>
-    <p><a href="${pageContext.request.contextPath}/">Go to index</a></p>
+    <jsp:include page="template/links.jsp"/>
 </body>
 </html>

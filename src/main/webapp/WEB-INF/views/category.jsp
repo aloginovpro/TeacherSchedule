@@ -7,21 +7,16 @@
     <sec:csrfMetaTags />
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/style.css" />
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
-    <script src="${pageContext.request.contextPath}/js/category.js"></script>
+    <script src="${pageContext.request.contextPath}/js/common.js"></script>
     <title>${title}</title>
 </head>
 <body>
 
-    <p>
-        <a href="${pageContext.request.contextPath}/">Go to index</a>
-        <c:if test="${!isAdmin}">
-         or <a href="${pageContext.request.contextPath}/login">login</a>
-        </c:if>
-    </p>
+    <jsp:include page="template/links.jsp"/>
     <p>${description}</p>
 
     <c:if test="${items != null}">
-    <input type="text" id="filterInput" onkeyup="filterFunction()" placeholder="${prefix} filter" title="Filter" size="49">
+    <p><input type="text" id="filterInput" onkeyup="filterFunction()" placeholder="${prefix} filter" title="Filter" size="49"></p>
     <table id="itemsTable">
         <tr bgcolor="#faebd7">
             <th width="300px">${prefix}</th>

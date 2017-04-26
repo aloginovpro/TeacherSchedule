@@ -51,4 +51,17 @@ public class ScheduleService {
         subjectRepository.save(subjectsToAdd);
     }
 
+    public void updateSchedule(long teacherId, List<List<String>> table) {
+        Map<String, Long> subjectNameToId = getSubjects(teacherId).entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
+        for (int hour = 0; hour < 24; hour++) {
+            for (int day = 0; day < 7; day++) {
+                String subjectName = table.get(hour).get(day);
+                Long subjectId = subjectNameToId.get(subjectName);
+
+            }
+        }
+
+    }
+
 }

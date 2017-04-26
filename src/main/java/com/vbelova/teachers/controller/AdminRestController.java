@@ -3,11 +3,13 @@ package com.vbelova.teachers.controller;
 import com.google.common.collect.ImmutableMap;
 import com.vbelova.teachers.entity.*;
 import com.vbelova.teachers.service.EntityService;
+import com.vbelova.teachers.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Map;
 
 import static com.vbelova.teachers.controller.IndexController.*;
@@ -27,11 +29,12 @@ public class AdminRestController {
     );
 
     private final EntityService entityService;
+    private final ScheduleService scheduleService;
 
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    private DeleteResponse delete(@RequestBody DeleteRequest request) {
+    private BaseResponse delete(@RequestBody DeleteRequest request) {
         entityService.delete(categoryNameToClassMap.get(request.category), request.id);
-        return new DeleteResponse();
+        return new BaseResponse();
     }
 
     private static class DeleteRequest {
@@ -39,7 +42,7 @@ public class AdminRestController {
         public long id;
     }
 
-    private static class DeleteResponse {
+    private static class BaseResponse {
         public String error;
     }
 
@@ -104,6 +107,19 @@ public class AdminRestController {
         StringBuilder sb = new StringBuilder();
         bindingResult.getAllErrors().forEach(error -> sb.append(error.getDefaultMessage()).append("\n"));
         return new AddResponse(sb.toString());
+    }
+
+    @PostMapping(value = "/updateSchedule/{teacherId}")
+    private BaseResponse updateSchedule(
+            @PathVariable long teacherId,
+            @RequestBody UpdateScheduleRequest req
+    ) {
+        scheduleService.updateSchedule(teacherId, req.table);
+        return new BaseResponse();
+    }
+
+    public static class UpdateScheduleRequest {
+        public List<List<String>> table;
     }
 
 }

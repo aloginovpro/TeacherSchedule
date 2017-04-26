@@ -7,12 +7,7 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/style.css" />
 </head>
 <body>
-    <p>
-        <a href="${pageContext.request.contextPath}/">Go to index</a>
-        <c:if test="${!isAdmin}">
-         or <a href="${pageContext.request.contextPath}/login">login</a>
-        </c:if>
-    </p>
+    <jsp:include page="template/links.jsp"/>
 
     <p>Teacher: ${teacherName}</p>
 
