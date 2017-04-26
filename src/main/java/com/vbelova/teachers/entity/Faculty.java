@@ -20,8 +20,4 @@ public class Faculty implements CategoryEntity {
         return name;
     }
 
-    @Override
-    public String toString() {
-        return "category: faculty\nname: " + name;
-    }
 }

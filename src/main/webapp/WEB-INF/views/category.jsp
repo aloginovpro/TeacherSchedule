@@ -13,7 +13,16 @@
 <body>
 
     <jsp:include page="template/links.jsp"/>
-    <p>${description}</p>
+    <c:if test="${description != null}">
+        <table>
+        <c:forEach var="entry" items="${description}">
+            <tr>
+                <td width="100px"><b>${entry.key}</b></td>
+                <td width="100px">${entry.value}</td>
+            </tr>
+        </c:forEach>
+        </table>
+    </c:if>
 
     <c:if test="${items != null}">
     <p><input type="text" id="filterInput" onkeyup="filterFunction()" placeholder="${prefix} filter" title="Filter" size="49"></p>

@@ -1,6 +1,7 @@
 package com.vbelova.teachers.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -12,9 +13,9 @@ public class Teacher implements CategoryEntity {
     public Long id;
     @NotNull @Size(min = 3, message = "Teacher name is too short")
     public String name;
-    @NotNull @Size(message = "Experience can not be negative")
+    @NotNull @Min(value = 0, message = "Experience can not be negative")
     public Integer experience;
-    @NotNull @Size(min = 20, message = "Teacher can not be that young")
+    @NotNull @Min(value = 20, message = "Teacher can not be that young")
     public Integer age;
     @NotNull @Size(min = 5, message = "Email is too short")
     public String email;
@@ -26,11 +27,4 @@ public class Teacher implements CategoryEntity {
         return name;
     }
 
-    @Override
-    public String toString() {
-        return String.format(
-                "category: teacher\nname: %s\nexperience: %s y\nage: %s y\nemail: %s\n",
-                name, experience, age, email
-        );
-    }
 }

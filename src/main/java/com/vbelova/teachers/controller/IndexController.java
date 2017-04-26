@@ -130,7 +130,7 @@ public class IndexController {
                 .collect(Collectors.toMap(keyFunction, valueFunction));
         return new ModelAndView("category")
                     .addObject("title", entity == null ? "Title" : entity.getName())
-                    .addObject("description", entity == null ? null : entity.toString().replace("\n", "<br>"))
+                    .addObject("description", getFieldNameToValueMap(entity))
                     .addObject("prefix", prefix)
                     .addObject("categoryId", categoryId)
                     .addObject("items", itemsResult)
@@ -144,8 +144,30 @@ public class IndexController {
             return null;
         }
         return Arrays.stream(clazz.getDeclaredFields())
-                .filter(it -> !it.getName().equals("id") && !it.getName().endsWith("Id"))
+                .filter(IndexController::filterField)
                 .collect(Collectors.toMap(Field::getName, it -> javaClassToHtmlInputType(it.getType())));
+    }
+
+    private static Map<String, Object> getFieldNameToValueMap(Object o) {
+        if (o == null) {
+            return null;
+        }
+        return Arrays.stream(o.getClass().getDeclaredFields())
+                .filter(IndexController::filterField)
+                .collect(Collectors.toMap(Field::getName, it -> getFieldValue(it, o)));
+
+    }
+
+    private static boolean filterField(Field field) {
+        return !field.getName().equals("id") && !field.getName().endsWith("Id");
+    }
+
+    private static Object getFieldValue(Field f, Object o) {
+        try {
+            return f.get(o);
+        } catch (IllegalAccessException e) {
+            return null;
+        }
     }
 
     private static final Map<Class, String> javaClassToHtmlInputType = ImmutableMap.of(
