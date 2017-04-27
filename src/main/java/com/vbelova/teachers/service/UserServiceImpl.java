@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private static final GrantedAuthority ADMIN = new SimpleGrantedAuthority("ROLE_ADMIN");
-    private static final GrantedAuthority USER = new SimpleGrantedAuthority("ROLE_USER");
+    static final GrantedAuthority ADMIN = new SimpleGrantedAuthority("ROLE_ADMIN");
+    static final GrantedAuthority USER = new SimpleGrantedAuthority("ROLE_USER");
 
     private final UserRepository userRepository;
 
