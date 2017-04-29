@@ -11,6 +11,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Collection;
 
+import static com.vbelova.teachers.service.ScheduleService.PAIR_INTERVALS;
+import static com.vbelova.teachers.service.ScheduleService.WEEK_DAYS;
+
 @Controller
 @SuppressWarnings("unused")
 public class ScheduleController {
@@ -37,6 +40,8 @@ public class ScheduleController {
                 .addObject("isAuthorized", userService.isAuthorized())
                 .addObject("subjects", subjects)
                 .addObject("schedule", schedule)
+                .addObject("pairIntervals", PAIR_INTERVALS)
+                .addObject("weekDays", WEEK_DAYS)
                 .addObject("id", teacherId);
     }
 

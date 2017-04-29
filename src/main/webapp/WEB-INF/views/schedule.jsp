@@ -21,20 +21,16 @@
 
     <table id="scheduleTable">
         <tr bgcolor="#faebd7">
-            <th width="50px">start</th>
-            <th width="100px">Mon</th>
-            <th width="100px">Tue</th>
-            <th width="100px">Wed</th>
-            <th width="100px">Thu</th>
-            <th width="100px">Fri</th>
-            <th width="100px">Sat</th>
-            <th width="100px">Sun</th>
+            <th width="50px"></th>
+            <c:forEach var="day" items="${weekDays}">
+                <th width="100px">${day}</th>
+            </c:forEach>
         </tr>
-        <c:forEach begin="0" end="23" var="hour">
+        <c:forEach begin="0" end="${pairIntervals.size() - 1}" var="pair">
         <tr>
-            <td bgcolor="#faebd7" align="center"><c:if test="${hour < 10}">0</c:if>${hour}</td>
-        <c:forEach begin="0" end="6" var="day">
-            <c:set var="value" value="${schedule[hour][day]}"/>
+            <td bgcolor="#faebd7" align="center">${pairIntervals.get(pair)}</td>
+        <c:forEach begin="0" end="${weekDays.size() - 1}" var="day">
+            <c:set var="value" value="${schedule[pair][day]}"/>
             <c:if test="${!isAdmin}">
             <td align="${value == null ? 'center' : 'left'}">
                 ${value == null ? '-' : value}
@@ -56,7 +52,7 @@
     </table>
 
     <c:if test="${isAdmin}">
-    <input type="button" value="update" onclick="updateSchedule('${id}')">
+    <input type="button" value="update" onclick="updateSchedule('${id}', '${pairIntervals.size()}', '${weekDays.size()}')">
     </c:if>
 
 </body>

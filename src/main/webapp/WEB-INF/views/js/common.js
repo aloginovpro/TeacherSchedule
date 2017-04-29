@@ -48,12 +48,12 @@ function create(category, categoryId) {
     );
 }
 
-function updateSchedule(id) {
+function updateSchedule(id, rowCount, colCount) {
     var table = document.getElementById("scheduleTable");
     var arr = [];
-    for (var row = 0; row < 24; row++) {
+    for (var row = 0; row < rowCount; row++) {
         arr[row] = [];
-        for (var col = 0; col < 7; col++) {
+        for (var col = 0; col < colCount; col++) {
             arr[row][col] = table.rows[row+1].cells[col+1].firstElementChild.value;
         }
     }

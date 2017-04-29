@@ -58,8 +58,8 @@ public class ScheduleServiceImpl implements ScheduleService {
         scheduleItemRepository.deleteAll();
         Map<String, Long> subjectNameToId = getSubjects(teacherId).entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
-        for (int hour = 0; hour < 24; hour++) {
-            for (int day = 0; day < 7; day++) {
+        for (int hour = 0; hour < PAIR_INTERVALS.size(); hour++) {
+            for (int day = 0; day < WEEK_DAYS.size(); day++) {
                 String subjectName = table.get(hour).get(day);
                 if (subjectName.equals("-")) {
                     continue;
